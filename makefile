@@ -26,25 +26,23 @@ $(PKGS):
 	@echo "-------------------------------------"
 
 	#restore package to default
-	rm -rf "$(PKGS_DIR)$@"
-	svn update "$(PKGS_DIR)$@"
+	rm -rf "$(PKGS_DIR)/$@"
+	svn update "$(PKGS_DIR)/$@"
 
 	#patch -d "$(PKGS_DIR)$@/trunk" -p0 < $(PATCHES_DIR)/$(@F)/$(@F)_src.patch \
 	#Patch new package
 	if [ -d $(PATCHES_DIR)$(@F) ]; \
 	then \
-		cp $(PATCHES_DIR)$(@F)/$(@F)_src.patch $(PKGS_DIR)$@/trunk ; \
-		patch -d "$(PKGS_DIR)$@" -p0 < $(PATCHES_DIR)$(@F)/$(@F).patch ; \
-	else \
-		if [ -f $(PATCHES_DIR)$(@F).patch ]; \
-		then \
-			patch -d "$(PKGS_DIR)$@" -p0 < $(PATCHES_DIR)$(@F).patch ; \
-		fi \
+		cp "$(PATCHES_DIR)/$(@F)/$(@F)_src.patch" "$(PKGS_DIR)$@/trunk" ; \
+		patch -d "$(PKGS_DIR)/$@" -p0 < "$(PATCHES_DIR)/$(@F)/$(@F).patch" ; \
+	elif [ -f $(PATCHES_DIR)$(@F).patch ]; \
+	then \
+			patch -d "$(PKGS_DIR)/$@" -p0 < "$(PATCHES_DIR)/$(@F).patch" ; \
 	fi
 
 	#Make package, move build to mirror
 	cd "$(PKGS_DIR)/$@/trunk" && makepkg --sign --skipchecksums -f
-	mv -f "$(PKGS_DIR)/$@/trunk/$(@F)"-* $(MIRROR_DIR)/pool/packages/
+	mv -f "$(PKGS_DIR)/$@/trunk/$(@F)"-* "$(MIRROR_DIR)/pool/packages/"
 
 	#link package to the correct repos symlink folder
 	#and repo-add the new package
