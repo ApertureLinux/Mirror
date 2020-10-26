@@ -1,0 +1,26 @@
+Index: trunk/motd
+===================================================================
+--- trunk/motd	(revision 397395)
++++ trunk/motd	(working copy)
+@@ -0,0 +1 @@
++A Trusted Friend in Science
+Index: trunk/os-release
+===================================================================
+--- trunk/os-release	(revision 397395)
++++ trunk/os-release	(working copy)
+@@ -1,10 +1,10 @@
+-NAME="Arch Linux"
+-PRETTY_NAME="Arch Linux"
++NAME="Aperture Linux"
++PRETTY_NAME="Aperture Linux"
+ ID=arch
+ BUILD_ID=rolling
+ ANSI_COLOR="38;2;23;147;209"
+-HOME_URL="https://www.archlinux.org/"
+-DOCUMENTATION_URL="https://wiki.archlinux.org/"
++HOME_URL="https://www.aperturelinux.org/"
++DOCUMENTATION_URL="https://aperturelinux.org/"
+ SUPPORT_URL="https://bbs.archlinux.org/"
+ BUG_REPORT_URL="https://bugs.archlinux.org/"
+-LOGO=archlinux
++LOGO=aperturelinux

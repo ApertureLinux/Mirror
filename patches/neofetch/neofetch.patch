@@ -1,0 +1,24 @@
+Index: trunk/PKGBUILD
+===================================================================
+--- trunk/PKGBUILD	(revision 723867)
++++ trunk/PKGBUILD	(working copy)
+@@ -27,10 +27,17 @@
+   'xorg-xwininfo: See https://github.com/dylanaraps/neofetch/wiki/Images-in-the-terminal'
+ )
+ _commit="60d07dee6b76769d8c487a40639fb7b5a1a7bc85"
+-source=("git+https://github.com/dylanaraps/neofetch.git#commit=${_commit}?signed")
+-validpgpkeys=("7C20ADCD35D9797789B6BCC046D62DD9F1DE636E") # Dylan Araps
++source=("git+https://github.com/dylanaraps/neofetch.git#commit=${_commit}")
++#validpgpkeys=("7C20ADCD35D9797789B6BCC046D62DD9F1DE636E") # Dylan Araps
+ sha256sums=('SKIP')
+ 
++prepare(){
++  cd "${pkgname}"
++
++  patch -Np1 -i ../../neofetch_src.patch
++}
++
++
+ package() {
+   cd "${pkgname}"
+   make DESTDIR="$pkgdir" install
