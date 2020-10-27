@@ -27,17 +27,21 @@ $(PKGS):
 
 	#restore package to default
 	rm -rf "$(PKGS_DIR)/$@"
-	svn update "$(PKGS_DIR)/$@"
+	if svn status $(PKGS_DIR) | grep "*is not a working copy*" > /dev/null ; then \
+		git clone "https://aur.archlinux.org/$@.git" \
+	else; then \
+		svn update "$(PKGS_DIR)/$@"; \
+	fi
 
 	#patch -d "$(PKGS_DIR)$@/trunk" -p0 < $(PATCHES_DIR)/$(@F)/$(@F)_src.patch \
 	#Patch new package
 	if [ -d $(PATCHES_DIR)$(@F) ]; \
 	then \
-		cp "$(PATCHES_DIR)/$(@F)/$(@F)_src.patch" "$(PKGS_DIR)$@/trunk" ; \
+		cp "$(PATCHES_DIR)/$(@F)/$(@F)_src.patch" "$(PKGS_DIR)/$@/trunk" ; \
 		patch -d "$(PKGS_DIR)/$@" -p0 < "$(PATCHES_DIR)/$(@F)/$(@F).patch" ; \
-	elif [ -f $(PATCHES_DIR)$(@F).patch ]; \
+	elif [ -f "$(PATCHES_DIR)/$(@F).patch" ]; \
 	then \
-			patch -d "$(PKGS_DIR)/$@" -p0 < "$(PATCHES_DIR)/$(@F).patch" ; \
+		patch -d "$(PKGS_DIR)/$@" -p0 < "$(PATCHES_DIR)/$(@F).patch" ; \
 	fi
 
 	#Make package, move build to mirror
