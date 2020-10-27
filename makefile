@@ -27,9 +27,9 @@ $(PKGS):
 
 	#restore package to default
 	rm -rf "$(PKGS_DIR)/$@"
-	if svn status $(PKGS_DIR) | grep "*is not a working copy*" > /dev/null ; then \
+	if ! svn status "$(PKGS_DIR)" 2>&1 | grep -q "is not a working copy"; then \
 		git clone "https://aur.archlinux.org/$@.git" \
-	else; then \
+	else \
 		svn update "$(PKGS_DIR)/$@"; \
 	fi
 
