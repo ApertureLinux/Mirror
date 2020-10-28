@@ -8,11 +8,12 @@ PKGS  = core/filesystem        \
     AUR/yay 
 
 
-REPOS = $(subst /,.db,$(dir $(PKGS)))
+REPOS = $(sort $(subst /,.db,$(dir $(PKGS))))
 
 all: fetch_rule $(REPOS)
 
 fetch_rule:
+	@echo "This might take a while... updating mirror"
 	@echo rsync -rtlvHP --delete-after --delay-updates --safe-links    \
 		$(MIRROR_URL) $(MIRROR_DIR)
 
@@ -28,8 +29,9 @@ $(PKGS):
 	rm -rf "$(PKGS_DIR)/$@"
 
 	#pull new package version
-	if ! svn status "$(PKGS_DIR)" 2>&1 | grep -q "is not a working copy"; then \
-		git clone "https://aur.archlinux.org/$@.git"; \
+	if svn status "$(PKGS_DIR)/$(@D)" 2>&1 | grep -q "is not a working copy"; then \
+		cd "$(PKGS_DIR)/$(@D)"; \
+		git clone "https://aur.archlinux.org/$(@F).git"; \
 	else \
 		svn update "$(PKGS_DIR)/$@"; \
 	fi
@@ -39,13 +41,15 @@ $(PKGS):
 
 
 	#Patch new package
-	if [ -d $(PATCHES_DIR)$(@F) ]; \
+	if [ -d "$(PATCHES_DIR)/$(@F)" ]; \
 	then \
 		cp "$(PATCHES_DIR)/$(@F)/$(@F)_src.patch" "$(PKGS_DIR)/$@/trunk" ; \
 		patch -d "$(PKGS_DIR)/$@" -p0 < "$(PATCHES_DIR)/$(@F)/$(@F).patch" ; \
+\
 	elif [ -f "$(PATCHES_DIR)/$(@F).patch" ]; \
 	then \
 		patch -d "$(PKGS_DIR)/$@" -p0 < "$(PATCHES_DIR)/$(@F).patch" ; \
+\
 	fi
 
 	#Make package, move build to mirror
