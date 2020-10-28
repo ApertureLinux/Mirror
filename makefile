@@ -7,7 +7,6 @@ PKGS  = core/filesystem        \
     community/neofetch \
     AUR/yay 
 
-#core/someothercrap    \
 
 REPOS = $(subst /,.db,$(dir $(PKGS)))
 
@@ -27,13 +26,18 @@ $(PKGS):
 
 	#restore package to default
 	rm -rf "$(PKGS_DIR)/$@"
+
+	#pull new package version
 	if ! svn status "$(PKGS_DIR)" 2>&1 | grep -q "is not a working copy"; then \
-		git clone "https://aur.archlinux.org/$@.git" \
+		git clone "https://aur.archlinux.org/$@.git"; \
 	else \
 		svn update "$(PKGS_DIR)/$@"; \
 	fi
 
+
 	#patch -d "$(PKGS_DIR)$@/trunk" -p0 < $(PATCHES_DIR)/$(@F)/$(@F)_src.patch \
+
+
 	#Patch new package
 	if [ -d $(PATCHES_DIR)$(@F) ]; \
 	then \
