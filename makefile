@@ -5,7 +5,7 @@ MIRROR_URL = rsync://mirror.umd.edu/archlinux
 
 PKGS  = core/filesystem        \
     community/neofetch \
-    AUR/yay 
+    community/yay 
 
 
 REPOS = $(sort $(subst /,.db,$(dir $(PKGS))))
@@ -27,9 +27,13 @@ $(PKGS):
 
 	#restore package to default
 	rm -rf "$(PKGS_DIR)/$@"
+	rm -rf "$(PKGS_DIR)/$(@D)-git/$(@F)"
 
 	#pull new package version
-	if svn status "$(PKGS_DIR)/$(@D)" 2>&1 | grep -q "is not a working copy"; then \
+#	if git ls-remote -q "https://aur.archlinux.org/$(@F).git" ; then \
+	#
+
+	if [ "$(svn update $(PKGS_DIR)/$@ 2>&1 | wc -l)" == 2 ] ; then \
 		cd "$(PKGS_DIR)/$(@D)"; \
 		git clone "https://aur.archlinux.org/$(@F).git"; \
 	else \
@@ -53,8 +57,15 @@ $(PKGS):
 	fi
 
 	#Make package, move build to mirror
-	cd "$(PKGS_DIR)/$@/trunk" && makepkg --sign --skipchecksums -f
-	mv -f "$(PKGS_DIR)/$@/trunk/$(@F)"-* "$(MIRROR_DIR)/pool/packages/"
+	if [ -d "$(PKGS_DIR)/$@/trunk" ]; \
+	then \
+		( cd "$(PKGS_DIR)/$@/trunk" && makepkg --sign --skipchecksums -f ) ; \
+		mv -f "$(PKGS_DIR)/$@/trunk/$(@F)"-* "$(MIRROR_DIR)/pool/packages/" ; \
+	else \
+                ( cd "$(PKGS_DIR)/$@/" && makepkg --sign --skipchecksums -f ) ; \
+                mv -f "$(PKGS_DIR)/$@/$(@F)"-*pkg* "$(MIRROR_DIR)/pool/packages/" ; \
+	fi
+
 
 	#link package to the correct repos symlink folder
 	#and repo-add the new package
