@@ -12,9 +12,23 @@ REPOS = $(sort $(subst /,.db,$(dir $(PKGS))))
 
 all: fetch_rule $(REPOS)
 
+init:
+	@echo "Creating Folder Structure"
+
+	@#Create Required Folder structure (ones on .gitignore)
+	@mkdir packages
+	@mkdir packages/community
+	@mkdir packages/core
+	@mkdir packages/extra
+	
+	@echo "First pull of mirror, thit will take a long time"
+	@#Get arch mirror
+	$(MAKE) fetch_rule
+	
+
 fetch_rule:
 	@echo "This might take a while... updating mirror"
-	@echo rsync -rtlvHP --delete-after --delay-updates --safe-links    \
+	rsync -rtlvHP --delete-after --delay-updates --safe-links    \
 		$(MIRROR_URL) $(MIRROR_DIR)
 
 %.db:
