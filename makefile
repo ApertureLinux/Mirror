@@ -30,10 +30,10 @@ $(PKGS):
 	rm -rf "$(PKGS_DIR)/$(@D)-git/$(@F)"
 
 	#pull new package version
-#	if git ls-remote -q "https://aur.archlinux.org/$(@F).git" ; then \
+	#if git ls-remote -q "https://aur.archlinux.org/$(@F).git" ; then \
 	#
-
-	if [ "$(svn update $(PKGS_DIR)/$@ 2>&1 | wc -l)" == 2 ] ; then \
+	
+	if [ "$(shell svn update $(PKGS_DIR)/$@ | wc -l)" == 2 ] ; then \
 		cd "$(PKGS_DIR)/$(@D)"; \
 		git clone "https://aur.archlinux.org/$(@F).git"; \
 	else \
@@ -70,10 +70,10 @@ $(PKGS):
 	#link package to the correct repos symlink folder
 	#and repo-add the new package
 	cd $(MIRROR_DIR)/$(@D)/*/*/ ;            \
-	rm "$(@F)-"* &&                    \
+	rm "$(@F)-"* || true &&                    \
 	ln -s "../../../pool/packages/$(@F)"-*xz &&    \
 	ln -s "../../../pool/packages/$(@F)"-*xz.sig &&   \
-	repo-remove ./$(@D).db.*gz "$(@F)" &&        \
+	repo-remove ./$(@D).db.*gz "$(@F)" || true   &&        \
 	repo-add ./$(@D).db.*gz "$(@F)-"*xz
 
 .PHONY: all fetch_rule $(PKGS) %.db
