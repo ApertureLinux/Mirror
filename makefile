@@ -17,9 +17,10 @@ init:
 
 	@#Create Required Folder structure (ones on .gitignore)
 	@mkdir packages
-	@mkdir packages/community
-	@mkdir packages/core
-	@mkdir packages/extra
+	cd packages && svn checkout --depth=empty svn://svn.archlinux.org/packages
+	mv packages/packages packages/core
+	cd packages && svn checkout --depth=empty svn://svn.archlinux.org/community
+
 	
 	@echo "First pull of mirror, thit will take a long time"
 	@#Get arch mirror
@@ -41,7 +42,6 @@ $(PKGS):
 
 	#restore package to default
 	rm -rf "$(PKGS_DIR)/$@"
-	rm -rf "$(PKGS_DIR)/$(@D)-git/$(@F)"
 
 	#pull new package version
 	#if git ls-remote -q "https://aur.archlinux.org/$(@F).git" ; then \
