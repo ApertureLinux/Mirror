@@ -85,9 +85,11 @@ $(PKGS):
 	#and repo-add the new package
 	cd $(MIRROR_DIR)/$(@D)/*/*/ ;            \
 	rm "$(@F)-"* || true &&                    \
-	ln -s "../../../pool/packages/$(@F)"-*xz &&    \
-	ln -s "../../../pool/packages/$(@F)"-*xz.sig &&   \
+	ln -s "../../../pool/packages/$(@F)"-*tar*.xz || true &&    \
+	ln -s "../../../pool/packages/$(@F)"-*tar*.zst || true &&    \
+	ln -s "../../../pool/packages/$(@F)"-*tar*.sig &&   \
 	repo-remove ./$(@D).db.*gz "$(@F)" || true   &&        \
-	repo-add ./$(@D).db.*gz "$(@F)-"*xz
+	repo-add ./$(@D).db.*gz "$(@F)-"*xz || true && \
+	repo-add ./$(@D).db.*gz "$(@F)-"*zst || true
 
 .PHONY: all fetch_rule $(PKGS) %.db
