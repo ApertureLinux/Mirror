@@ -4,7 +4,8 @@ MIRROR_DIR = archlinux/
 MIRROR_URL = rsync://mirror.umd.edu/archlinux
 
 PKGS  = core/filesystem        \
-    community/neofetch \
+	core/grub              \
+    community/neofetch         \
     community/yay 
 
 
