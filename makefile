@@ -4,7 +4,8 @@ MIRROR_DIR = archlinux/
 MIRROR_URL = rsync://mirror.umd.edu/archlinux
 
 PKGS  = core/filesystem        \
-    community/neofetch \
+	core/grub              \
+    community/neofetch         \
     community/yay 
 
 
@@ -17,9 +18,10 @@ init:
 
 	@#Create Required Folder structure (ones on .gitignore)
 	@mkdir packages
-	@mkdir packages/community
-	@mkdir packages/core
-	@mkdir packages/extra
+	cd packages && svn checkout --depth=empty svn://svn.archlinux.org/packages
+	mv packages/packages packages/core
+	cd packages && svn checkout --depth=empty svn://svn.archlinux.org/community
+
 	
 	@echo "First pull of mirror, thit will take a long time"
 	@#Get arch mirror
@@ -41,7 +43,6 @@ $(PKGS):
 
 	#restore package to default
 	rm -rf "$(PKGS_DIR)/$@"
-	rm -rf "$(PKGS_DIR)/$(@D)-git/$(@F)"
 
 	#pull new package version
 	#if git ls-remote -q "https://aur.archlinux.org/$(@F).git" ; then \
@@ -85,9 +86,11 @@ $(PKGS):
 	#and repo-add the new package
 	cd $(MIRROR_DIR)/$(@D)/*/*/ ;            \
 	rm "$(@F)-"* || true &&                    \
-	ln -s "../../../pool/packages/$(@F)"-*xz &&    \
-	ln -s "../../../pool/packages/$(@F)"-*xz.sig &&   \
+	ln -s "../../../pool/packages/$(@F)"-*tar*.xz || true &&    \
+	ln -s "../../../pool/packages/$(@F)"-*tar*.zst || true &&    \
+	ln -s "../../../pool/packages/$(@F)"-*tar*.sig &&   \
 	repo-remove ./$(@D).db.*gz "$(@F)" || true   &&        \
-	repo-add ./$(@D).db.*gz "$(@F)-"*xz
+	repo-add ./$(@D).db.*gz "$(@F)-"*xz || true && \
+	repo-add ./$(@D).db.*gz "$(@F)-"*zst || true
 
 .PHONY: all fetch_rule $(PKGS) %.db
