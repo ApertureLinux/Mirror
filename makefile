@@ -11,7 +11,13 @@ PKGS  = core/filesystem        \
 
 REPOS = $(sort $(subst /,.db,$(dir $(PKGS))))
 
-all: fetch_rule $(REPOS)
+all: fetch_rule $(REPOS) publish
+
+dry: $(REPOS)
+
+local: fetch_rule $(REPOS)
+
+publish: ./sync.sh
 
 init:
 	@echo "Creating Folder Structure"
