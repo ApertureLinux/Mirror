@@ -17,7 +17,8 @@ dry: $(REPOS)
 
 local: fetch_rule $(REPOS)
 
-publish: ./sync.sh
+publish:
+	./sync.sh
 
 init:
 	@echo "Creating Folder Structure"

@@ -62,7 +62,7 @@ transfer() {
     ## -a    archive, recursive, preserve time/original owner id
     ## -P    print progres/save partial(alow resume)
     ## -H    preserve links(hard/sym)
-    $RSYNC_COMMAND -rhHx --link-dest="$POINTER_PATH" \
+    $RSYNC_COMMAND -rhHxl -P --link-dest="$POINTER_PATH" \
         "$LOCAL_DIR/" ${RSYNC_REMOTE}"${REMOTE_DIR}/incomplete_$DATE"
 
     ## don't commit snapshot on some rsync errors (see rsync exit codes)
