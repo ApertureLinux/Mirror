@@ -41,6 +41,8 @@ fetch_rule:
 		$(MIRROR_URL) $(MIRROR_DIR)
 
 %.db:
+	rm -rf packages/community/*
+	rm -rf packages/core/*
 	$(MAKE) $(filter $(basename $@)/%, $(PKGS))
 
 $(PKGS):
