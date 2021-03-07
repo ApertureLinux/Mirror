@@ -83,10 +83,10 @@ $(PKGS):
 	#Make package, move build to mirror
 	if [ -d "$(PKGS_DIR)/$@/trunk" ]; \
 	then \
-		( cd "$(PKGS_DIR)/$@/trunk" && makepkg --sign --skipchecksums -f ) ; \
+		( cd "$(PKGS_DIR)/$@/trunk" && makepkg -s --sign --skipchecksums -f ) ; \
 		mv -f "$(PKGS_DIR)/$@/trunk/$(@F)"-* "$(MIRROR_DIR)/pool/packages/" ; \
 	else \
-                ( cd "$(PKGS_DIR)/$@/" && makepkg --sign --skipchecksums -f ) ; \
+                ( cd "$(PKGS_DIR)/$@/" && makepkg -s --sign --skipchecksums -f ) ; \
                 mv -f "$(PKGS_DIR)/$@/$(@F)"-*pkg* "$(MIRROR_DIR)/pool/packages/" ; \
 	fi
 
