@@ -3,6 +3,10 @@ PKGS_DIR = packages/
 MIRROR_DIR = archlinux/
 MIRROR_URL = rsync://mirror.umd.edu/archlinux
 
+
+MAKEFLAGS="-j8"
+
+
 PKGS  = core/filesystem        \
 	core/grub              \
     community/neofetch         \
