@@ -19,7 +19,7 @@ REMOTE_DIR="./mirrors"
 LOCAL_DIR="./archlinux"
 RSYNC_COMMAND="/usr/bin/rsync"
 SSH_COMMAND="/usr/bin/ssh"
-POINTER_PATH="../../aperture"
+POINTER_PATH="../aperture"
 MONTHS=5
 DAYS=14
 LAST=3
@@ -77,9 +77,11 @@ transfer() {
     ## -a    archive, recursive, preserve time/original owner id
     ## -P    print progres/save partial(alow resume)
     ## -H    preserve links(hard/sym)
-    $RSYNC_COMMAND -rhHxl -P --link-dest="$POINTER_PATH" \
+    $RSYNC_COMMAND -rhHxl -P --link-dest="../$POINTER_PATH" \
         "$LOCAL_DIR/" ${RSYNC_REMOTE}"${REMOTE_DIR}/incomplete_$DATE"
 
+    echo     $RSYNC_COMMAND -rhHxl -P --link-dest="../$POINTER_PATH" \
+        "$LOCAL_DIR/" ${RSYNC_REMOTE}"${REMOTE_DIR}/incomplete_$DATE"
     ## don't commit snapshot on some rsync errors (see rsync exit codes)
     ## TODO: maybe remove incomplete backup dir as well?
     contains $? 1 2 5 12 20 22 30 && error rsync failed to make backup
@@ -95,7 +97,7 @@ transfer() {
     $SSH_COMMAND $REMOTE_NAME "
         cd \"$REMOTE_DIR\"
         mv \"incomplete_$DATE\" \"$DATE\"
-        ln -nfs \"$DATE\" current
+        ln -nfs \"$REMOTE_DIR/$DATE\" $POINTER_PATH
         KEEP=\"\$(
             {
                 ls -1d *-*-*_*/ | sort -ru -k1,1 -t- | head -$YEARS ;
