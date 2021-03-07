@@ -22,8 +22,9 @@ SSH_COMMAND="/usr/bin/ssh"
 POINTER_PATH="../aperture"
 MONTHS=5
 DAYS=14
-LAST=3
+LAST=5
 KEEP_TODAY=true
+DEBUG=true
 
 
 trap on_exit EXIT
@@ -39,6 +40,17 @@ contains() { # usage: contains to_find elem1 elem2 elem3
 error() {
     echo "$@" >&2
     exit 1
+}
+
+run() {
+    local rc
+
+    "$@"
+    rc=$?
+
+    [ "$DEBUG" = true ] && echo "[$rc] $@" >&2
+
+    return $rc
 }
 
 # sanity checks (prob should add some more -- ?don't run multiple at once)
@@ -71,20 +83,21 @@ setup() {
 }
 
 transfer() {
+    local rc
+
     ## create remote dirs
     $SSH_COMMAND $REMOTE_NAME "mkdir -p \"${REMOTE_DIR}\""
 
     ## -a    archive, recursive, preserve time/original owner id
     ## -P    print progres/save partial(alow resume)
     ## -H    preserve links(hard/sym)
-    $RSYNC_COMMAND -rhHxl -P --link-dest="../$POINTER_PATH" \
+    run $RSYNC_COMMAND -rhHxl -P --link-dest="../$POINTER_PATH" \
         "$LOCAL_DIR/" ${RSYNC_REMOTE}"${REMOTE_DIR}/incomplete_$DATE"
+    rc=$?
 
-    echo     $RSYNC_COMMAND -rhHxl -P --link-dest="../$POINTER_PATH" \
-        "$LOCAL_DIR/" ${RSYNC_REMOTE}"${REMOTE_DIR}/incomplete_$DATE"
     ## don't commit snapshot on some rsync errors (see rsync exit codes)
     ## TODO: maybe remove incomplete backup dir as well?
-    contains $? 1 2 5 12 20 22 30 && error rsync failed to make backup
+    contains $rc 1 2 5 12 20 22 30 && error "failed to make backup [$rc]"
 
     # finalize snapshot
     #  0 - ssh (these run on the remote server)
