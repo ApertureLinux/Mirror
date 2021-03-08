@@ -110,9 +110,10 @@ transfer() {
     $SSH_COMMAND $REMOTE_NAME "
         cd \"$REMOTE_DIR\"
         mv \"incomplete_$DATE\" \"$DATE\"
-        ln -nfs \"$REMOTE_DIR/$DATE\" $POINTER_PATH
+        ln -nfs \"$REMOTE_DIR/$DATE\" \"$POINTER_PATH\"
         KEEP=\"\$(
             {
+                basename \"$(realpath \"$POINTER_PATH\")\" ;
                 ls -1d *-*-*_*/ | sort -ru -k1,1 -t- | head -$YEARS ;
                 ls -1d *-*-*_*/ | sort -ru -k1,2 -t- | head -$MONTHS ;
                 ls -1d *-*-*_*/ | sort -ru -k1,1 -t_ | head -$DAYS ;
