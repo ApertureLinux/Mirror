@@ -21,9 +21,9 @@ RSYNC_COMMAND="/usr/bin/rsync"
 SSH_COMMAND="/usr/bin/ssh"
 POINTER_PATH="../aperture"
 MONTHS=5
-DAYS=14
-LAST=5
-KEEP_TODAY=true
+DAYS=2
+LAST=7
+KEEP_TODAY=false
 DEBUG=true
 
 
