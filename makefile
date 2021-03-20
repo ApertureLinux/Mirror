@@ -93,7 +93,10 @@ $(PKGS):
 	fi
 
 build:
-	@echo "yeet"
+	@echo "---------------------------"
+	@echo "Rebuilding Package \"$(pkg)\""
+	@echo "---------------------------"
+
 	$(MAKE) dir=$(dir) pkg=$(pkg) target=$(target) fetch
 	$(MAKE) dir=$(dir) pkg=$(pkg) target=$(target) patch
 	$(MAKE) dir=$(dir) pkg=$(pkg) target=$(target) compile
