@@ -110,7 +110,7 @@ transfer() {
     $SSH_COMMAND $REMOTE_NAME "
         cd \"$REMOTE_DIR\"
         mv \"incomplete_$DATE\" \"$DATE\"
-        ln -nfs \"$REMOTE_DIR/$DATE\" \"$POINTER_PATH\"
+        ln -nfs \"$DATE\" \"$POINTER_PATH\"
         KEEP=\"\$(
             {
                 basename \"$(realpath \"$POINTER_PATH\")\" ;
