@@ -15,11 +15,11 @@
 #  LAST            keep last X backups                          (0 = ignore)
 #  KEEP_TODAY      keep all backups made today                  (true/false)
 REMOTE_NAME="Aperture-Mirror"        # for ssh backups
-REMOTE_DIR="./mirrors"
+REMOTE_DIR="aperture"
 LOCAL_DIR="./archlinux"
 RSYNC_COMMAND="/usr/bin/rsync"
 SSH_COMMAND="/usr/bin/ssh"
-POINTER_PATH="../aperture"
+POINTER_PATH="latest"
 MONTHS=5
 DAYS=2
 LAST=7
@@ -48,7 +48,7 @@ run() {
     "$@"
     rc=$?
 
-    [ "$DEBUG" = true ] && echo "[$rc] $@" >&2
+    [ "$DEBUG" = true ] && echo "[$rc] $*" >&2
 
     return $rc
 }
@@ -79,7 +79,7 @@ setup() {
     [ "${LAST:-0}" -eq 0 ] && LAST=1
 
     ## for the snapshot dirname
-    DATE="`date "+%F_%H%M%S"`"
+    DATE="$(date "+%F_%H%M%S")"
 }
 
 transfer() {
