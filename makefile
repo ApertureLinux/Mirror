@@ -102,14 +102,14 @@ build:
 fetch: 
 	#pull new package version
 	#if git ls-remote -q "https://aur.archlinux.org/$(@F).git" ; then \
-	#
-	
+
 	if [ "$(shell svn update $(PKGS_DIR)/$(target) | wc -l)" == 2 ] ; then \
 		cd "$(PKGS_DIR)/$(dir)"; 				\
 		git clone "https://aur.archlinux.org/$(pkg).git"; 	\
 	else 								\
 		svn update "$(PKGS_DIR)/$(target)"; 				\
 	fi
+
 patch:
 	#Patch new package
 	if [ -d "$(PATCHES_DIR)/$(pkg)" ]; 						\
@@ -122,6 +122,7 @@ patch:
 		patch -d "$(PKGS_DIR)/$(target)" -p0 < "$(PATCHES_DIR)/$(pkg).patch" ;  	\
 										        \
 	fi
+
 compile:
 	#Make package, move build to mirror
 	if [ -d "$(PKGS_DIR)/$(target)/trunk" ]; 			                	\
@@ -132,6 +133,7 @@ compile:
                 ( cd "$(PKGS_DIR)/$(target)/" && makepkg -s --sign --skipchecksums -f ) ;	\
                 mv -f "$(PKGS_DIR)/$(target)/$(pkg)"-*pkg* "$(MIRROR_DIR)/pool/packages/" ;	\
 	fi
+
 package:
 	#link package to the correct repos symlink folder
 	#and repo-add the new package
