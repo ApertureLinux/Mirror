@@ -1,8 +1,8 @@
 #!/bin/bash
 
-cd $1
+cd "$1"
 PATH= source PKGBUILD
-if [[ -v epoch ]]; then
+if [[ -n "$epoch" ]]; then
     fullver=$epoch:$pkgver-$pkgrel
 else
     fullver=$pkgver-$pkgrel
